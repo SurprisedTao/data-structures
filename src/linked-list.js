@@ -1,32 +1,21 @@
-interface LNode {
-  value: any
-  next: any
-}
-function createNode(val): LNode {
-  return {
-    value: val,
-    next: null
-  }
-}
-
-class LinkedList {
-  public head: LNode
-  public tail: LNode
+export class LinkedList {
+  head = null
+  tail = null
   constructor() { }
 
-  add(val: any) {
-    const n = createNode(val)
+  add(val) {
+    const n = LinkedList.createNode(val)
     if (!this.head) {
       this.head = n
       this.tail = n
-    } else {
+    } else if (this.tail) {
       this.tail.next = n
       this.tail = n
     }
   }
 
   prepend(val) {
-    const n = createNode(val)
+    const n = LinkedList.createNode(val)
     if (!this.head) {
       this.head = n
       this.tail = n
@@ -50,18 +39,25 @@ class LinkedList {
   }
 
   remove(val) {
-    let current = this.head
-
     if (!this.head) return false
 
-    if (current.value === val) {
-      this.head = current.next
+    if (this.head.value === val) {
+      if (this.head === this.tail) {
+        this.head = this.tail = null
+        return true
+      }
+      this.head = this.head.next
       return true
     }
+
+    let current = this.head
 
     while (current.next) {
       if (current.next.value === val) {
         current.next = current.next.next
+        if (!current.next) {
+          this.tail = current
+        }
         return true
       }
       current = current.next
@@ -70,7 +66,7 @@ class LinkedList {
     return false
   }
 
-  traverse(fun: (val: any) => any) {
+  traverse(fun) {
     let current = this.head
 
     while (current) {
@@ -79,7 +75,7 @@ class LinkedList {
     }
   }
 
-  reverseTraversal(fun: (val: any) => any) {
+  reverseTraversal(fun) {
     let current = this.tail
 
     while (current) {
@@ -88,10 +84,17 @@ class LinkedList {
       if (current === this.head) break
 
       let current2 = this.head
-      while (current2.next === current) {
+      while (current2.next !== current) {
         current2 = current2.next
       }
       current = current2
+    }
+  }
+
+  static createNode(val) {
+    return {
+      value: val,
+      next: null
     }
   }
 }
